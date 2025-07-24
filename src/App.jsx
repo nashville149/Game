@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import GameBoard from "./components/GameBoard";
 import StartButton from "./components/StartButton";
 import Score from "./components/Score";
+import Timer from "./components/Timer";
 import "./App.css";
 
 function App() {
@@ -52,6 +53,7 @@ function App() {
     <div className="App">
       <h1>Whack-a-Mole 🐹</h1>
       <Score score={score} />
+      <Timer isPlaying={isPlaying} duration={gameDuration} onExpire={() => {}} />
 
       <GameBoard
         activeHole={activeHole}
