@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import GameBoard from "./components/GameBoard";
 import StartButton from "./components/StartButton";
+import Score from "./components/Score";
 import "./App.css";
 
 function App() {
@@ -50,7 +51,7 @@ function App() {
   return (
     <div className="App">
       <h1>Whack-a-Mole 🐹</h1>
-      <h2>Score: {score}</h2>
+      <Score score={score} />
 
       <GameBoard
         activeHole={activeHole}
@@ -60,6 +61,6 @@ function App() {
       <StartButton onClick={startGame} disabled={isPlaying} />
     </div>
   );
-}
+  }
 
 export default App;
