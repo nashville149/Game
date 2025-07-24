@@ -1,35 +1,65 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect, useRef } from "react";
+import GameBoard from "./components/GameBoard";
+import StartButton from "./components/StartButton";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [score, setScore] = useState(0);
+  const [activeHole, setActiveHole] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const gameDuration = 10000;
+  const moleInterval = 800;
+
+  const timerRef = useRef(null);
+  const timeoutRef = useRef(null);
+
+  const startGame = () => {
+    setScore(0);
+    setIsPlaying(true);
+    showRandomMole();
+
+    timerRef.current = setInterval(showRandomMole, moleInterval);
+    timeoutRef.current = setTimeout(() => {
+      clearInterval(timerRef.current);
+      setIsPlaying(false);
+      setActiveHole(null);
+      alert(`Game Over! Your score: ${score}`);
+    }, gameDuration);
+  };
+
+  const showRandomMole = () => {
+    const randomIndex = Math.floor(Math.random() * 9);
+    setActiveHole(randomIndex);
+  };
+
+  const handleWhack = (index) => {
+    if (index === activeHole && isPlaying) {
+      setScore((prev) => prev + 1);
+      setActiveHole(null);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      clearInterval(timerRef.current);
+      clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="App">
+      <h1>Whack-a-Mole 🐹</h1>
+      <h2>Score: {score}</h2>
+
+      <GameBoard
+        activeHole={activeHole}
+        onWhack={handleWhack}
+      />
+
+      <StartButton onClick={startGame} disabled={isPlaying} />
+    </div>
+  );
 }
 
-export default App
+export default App;
